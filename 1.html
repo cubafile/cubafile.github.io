@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <meta name="referrer" content="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.6/controls.min.css" crossorigin="anonymous" />
+</script>
+<body bgcolor='black' style='margin:0'>
+</script>
+</head>
+
+<body>
+    <center>
+            <div data-shaka-player-container style='width: 100%; height: 100%'>
+            <video autoplay data-shaka-player id='video' style='width:100%;height:100%;'></video>
+        </div>
+    </center>
+    <script>
+        const manifestUri = "https://centerrrs.hypp.tv/PLTV/88888888/224/3221227615/3221227615.mpd?rrsip=centerrrs.hypp.tv&zoneoffset=0&servicetype=1&icpid=&accounttype=1&limitflux=-1&limitdur=-1&accountinfo=tnUM3pus6bSh1mr%2FQqP7gS%2BLhDQRCdSHNpB7NvbJKHO8SgkPnwzd4mMtcd%2Bh2%2B016nYGyKi6Pv7FEVqrmZ8NtvHl2ogHz3eAyG2k7xToFQmJBU24%2BKwsNeA0VE3pRwoj%3A20221124080145%3AUTC%2C1001767137%2C115.164.56.153%2C20221124080145%2Curn:Huawei:liveTV:iptv8997%2C1001767137%2C-1%2C0%2C1%2C%2C%2C2%2C595%2C%2C%2C2%2C1612403%2C0%2C517698%2C2706399750%2C%2C%2C2%2C1%2CEND&GuardEncType=2&it=H4sIAAAAAAAAADWOQQ7CIBREb8OSFKTULlhpTExMNWl1az7wi420KFQTb6_Vup2ZN3ljBIPbtdJaSuQlz7HkwkqhmUWx1IVpM11iLkjCexUUJwa87wZXBTthp3p1ZhnNKOeMMk6a6W7jwc3L6tFrjGrxx2qMz86gsqmlT0gUnIvoYOzCQA8eXsfo5wnBZlZjUpZ8KaSQRZaTcUobSNdPQy6QVqG_QUS7C-4LqBZ8QnIDcwWHFfSohof3P24f7cfmDRFIhEH0AAAA&tenantId=6001";
+        async function init() {
+            const video = document.getElementById('video');
+            const ui = video['ui'];
+            const controls = ui.getControls();
+            const player = controls.getPlayer();
+            window.player = player;
+            window.ui = ui;
+            player.configure({
+        drm: {
+          servers: {
+              'com.widevine.alpha': 'https://ottweb.hypp.tv:8064/?deviceId=MzM4OTc4ZjYtZWE3YS0zNzVlLWE3Y2UtNmViZGE1NDUyYjc3',
+          }
+        }
+      });
+            player.addEventListener('error', onPlayerErrorEvent);
+            controls.addEventListener('error', onUIErrorEvent);
+            try {
+                await player.load(manifestUri);
+                console.log('The video has now been loaded!');
+            } catch (error) {
+                onPlayerError(error);
+        }}
+
+        function onPlayerErrorEvent(errorEvent) {
+            onPlayerError(event.detail);
+        }
+
+        function onPlayerError(error) {
+            console.error('Error code', error.code, 'object', error);
+        }
+
+        function onUIErrorEvent(errorEvent) {
+            onPlayerError(event.detail);
+        }
+
+        function initFailed(errorEvent) {
+            console.error('Unable to load the UI library!');
+        }
+        document.addEventListener('shaka-ui-loaded', init);
+        document.addEventListener('shaka-ui-load-failed', initFailed);
+    </script>
+</body>
+
+</html>
